@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Reddit Scraper</string>
+    <string name="subreddit">Subreddit</string>
 </resources>
