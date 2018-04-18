@@ -1,5 +1,6 @@
 package daniel.com.redditscraper.async.redditscraper;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,7 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>> {
+public class RedditScraperAsyncTask extends AsyncTask<String, Integer, List<String>> {
     private static final String TAG = "RedditScraperAsyncTask";
     private static final int LIMIT = 10;
 
@@ -57,6 +58,8 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>
                         .getJSONObject("data")
                         .getString("url");
                 imageUrls.add(imageUrl);
+
+                publishProgress(i);
                 Log.i(TAG, imageUrl);
             }
         } catch (JSONException | IOException e) {
@@ -71,11 +74,17 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>
     }
 
     @Override
+    protected void onProgressUpdate(Integer[] progress) {
+        callback.updateProgress(progress[0]);
+    }
+
+    @Override
     protected void onPostExecute(List<String> imageUrls) {
         callback.imageUrls(imageUrls);
     }
 
+    @SuppressLint("DefaultLocale")
     private URL formatRequestUrl(String subreddit) throws MalformedURLException {
-        return new URL(String.format("https://www.reddit.com/r/%s/top/.json?limit=%d", subreddit, LIMIT));
+        return new URL(String.format("https://www.reddit.com/r/%s/.json?limit=%d", subreddit, LIMIT));
     }
 }

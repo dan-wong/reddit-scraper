@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import daniel.com.redditscraper.async.redditscraper.RedditScraperCallback;
 public class MainActivity extends AppCompatActivity implements ImageFromUrlCallback, RedditScraperCallback {
     private ImageView imageView;
     private EditText subredditEditText;
-    private Button getPictureButton;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +30,13 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
 
         imageView = findViewById(R.id.imageView);
         subredditEditText = findViewById(R.id.subredditEditText);
-        getPictureButton = findViewById(R.id.getPictureBtn);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setScaleY(3f);
 
         //Initially hide imageView component
         imageView.setVisibility(View.INVISIBLE);
 
-        getPictureButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.getPictureBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String subreddit = subredditEditText.getText().toString();
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
                     Toast.makeText(getApplicationContext(), "Subreddit cannot be empty!", Toast.LENGTH_SHORT).show();
                 } else {
                     new RedditScraperAsyncTask(MainActivity.this).execute(subreddit);
+                    progressBar.setProgress(0);
                 }
             }
         });
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
 
     @Override
     public void setImage(Bitmap image) {
+        if (imageView.getVisibility() == View.INVISIBLE) imageView.setVisibility(View.VISIBLE);
+        progressBar.setProgress(100);
         imageView.setImageBitmap(image);
     }
 
@@ -59,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
             for (String url : imageUrls) {
                 try {
                     if (new CheckImageValidAsyncTask().execute(url).get()) {
-                        imageView.setVisibility(View.VISIBLE);
                         new ImageFromUrlAsyncTask(this)
                                 .execute(url);
                         return;
@@ -71,5 +74,10 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
         }
 
         Toast.makeText(getApplicationContext(), "Subreddit has no images :(", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updateProgress(int progress) {
+        progressBar.setProgress(progress * 9);
     }
 }
