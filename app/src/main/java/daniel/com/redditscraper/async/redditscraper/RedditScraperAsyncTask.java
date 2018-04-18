@@ -2,7 +2,6 @@ package daniel.com.redditscraper.async.redditscraper;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedditScraperAsyncTask extends AsyncTask<String, Integer, List<String>> {
+public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>> {
     private static final String TAG = "RedditScraperAsyncTask";
     private static final int LIMIT = 10;
 
@@ -34,7 +33,6 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Integer, List<Stri
         HttpURLConnection urlConnection = null;
         try {
             URL url = formatRequestUrl(strings[0]);
-            Log.i(TAG, "URL: " + url.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -58,9 +56,6 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Integer, List<Stri
                         .getJSONObject("data")
                         .getString("url");
                 imageUrls.add(imageUrl);
-
-                publishProgress(i);
-                Log.i(TAG, imageUrl);
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();
@@ -71,11 +66,6 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Integer, List<Stri
         }
 
         return imageUrls;
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer[] progress) {
-        callback.updateProgress(progress[0]);
     }
 
     @Override

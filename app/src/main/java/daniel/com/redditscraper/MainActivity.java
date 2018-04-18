@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Random;
 
-import daniel.com.redditscraper.async.checkimagevalid.CheckImageValidAsyncTask;
 import daniel.com.redditscraper.async.imagefromurl.ImageFromUrlAsyncTask;
 import daniel.com.redditscraper.async.imagefromurl.ImageFromUrlCallback;
 import daniel.com.redditscraper.async.redditscraper.RedditScraperAsyncTask;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
         imageView = findViewById(R.id.imageView);
         subredditEditText = findViewById(R.id.subredditEditText);
         progressBar = findViewById(R.id.progressBar);
-        progressBar.setScaleY(3f);
+        progressBar.setVisibility(View.INVISIBLE);
 
         //Initially hide imageView component
         imageView.setVisibility(View.INVISIBLE);
@@ -43,8 +43,9 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
                 if (subreddit.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Subreddit cannot be empty!", Toast.LENGTH_SHORT).show();
                 } else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    imageView.setVisibility(View.INVISIBLE);
                     new RedditScraperAsyncTask(MainActivity.this).execute(subreddit);
-                    progressBar.setProgress(0);
                 }
             }
         });
@@ -52,32 +53,34 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
 
     @Override
     public void setImage(Bitmap image) {
-        if (imageView.getVisibility() == View.INVISIBLE) imageView.setVisibility(View.VISIBLE);
-        progressBar.setProgress(100);
+        progressBar.setVisibility(View.INVISIBLE);
+        imageView.setVisibility(View.VISIBLE);
         imageView.setImageBitmap(image);
     }
 
     @Override
     public void imageUrls(List<String> imageUrls) {
+        List<String> validImages = new ArrayList<>();
         if (!(imageUrls == null || imageUrls.isEmpty())) { //Not (null or empty)
-            for (String url : imageUrls) {
-                try {
-                    if (new CheckImageValidAsyncTask().execute(url).get()) {
-                        new ImageFromUrlAsyncTask(this)
-                                .execute(url);
-                        return;
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+            for (int i = 0; i < imageUrls.size(); i++) {
+                String url = imageUrls.get(i);
+                if (checkIfImage(url)) {
+                    validImages.add(url);
                 }
             }
         }
 
+        if (!validImages.isEmpty()) {
+            int random = new Random().nextInt(validImages.size() - 1);
+            new ImageFromUrlAsyncTask(this).execute(validImages.get(random));
+            return;
+        }
+
         Toast.makeText(getApplicationContext(), "Subreddit has no images :(", Toast.LENGTH_SHORT).show();
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void updateProgress(int progress) {
-        progressBar.setProgress(progress * 9);
+    private boolean checkIfImage(String url) {
+        return url.contains("jpeg") || url.contains("jpg") || url.contains("png");
     }
 }

@@ -22,6 +22,7 @@ public class ImageFromUrlAsyncTask extends AsyncTask<String, Void, Bitmap> {
         try {
             InputStream in = new URL(imageUrl).openStream();
             image = BitmapFactory.decodeStream(in);
+            in.close();
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
             e.printStackTrace();
