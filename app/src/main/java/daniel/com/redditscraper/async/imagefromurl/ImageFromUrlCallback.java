@@ -1,4 +1,4 @@
-package daniel.com.redditscraper.imagefromurl;
+package daniel.com.redditscraper.async.imagefromurl;
 
 import android.graphics.Bitmap;
 
