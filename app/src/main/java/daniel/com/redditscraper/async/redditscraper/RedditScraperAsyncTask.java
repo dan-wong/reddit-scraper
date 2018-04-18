@@ -18,6 +18,7 @@ import java.util.List;
 
 public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>> {
     private static final String TAG = "RedditScraperAsyncTask";
+    private static final String URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d";
     private static final int LIMIT = 10;
 
     private RedditScraperCallback callback;
@@ -75,6 +76,6 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>
 
     @SuppressLint("DefaultLocale")
     private URL formatRequestUrl(String subreddit) throws MalformedURLException {
-        return new URL(String.format("https://www.reddit.com/r/%s/.json?limit=%d", subreddit, LIMIT));
+        return new URL(String.format(URL_FORMAT, subreddit, LIMIT));
     }
 }

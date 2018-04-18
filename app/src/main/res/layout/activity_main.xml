@@ -63,6 +63,7 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/imageview"
             android:paddingTop="5dp"
             android:scaleType="fitCenter"

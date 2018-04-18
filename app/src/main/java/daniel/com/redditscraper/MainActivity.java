@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
 
         Toast.makeText(getApplicationContext(), "Subreddit has no images :(", Toast.LENGTH_SHORT).show();
         progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     private boolean checkIfImage(String url) {
