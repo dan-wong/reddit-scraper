@@ -61,7 +61,13 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
     @Override
     public void imageUrls(List<String> imageUrls) {
         List<String> validImages = new ArrayList<>();
-        if (!(imageUrls == null || imageUrls.isEmpty())) { //Not (null or empty)
+
+        //Only ever null when url response is not OK which is handled by MainActivity#error
+        if (imageUrls == null) {
+            return;
+        }
+
+        if (!imageUrls.isEmpty()) { //Not (null or empty)
             for (int i = 0; i < imageUrls.size(); i++) {
                 String url = imageUrls.get(i);
                 if (checkIfImage(url)) {
@@ -82,8 +88,14 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
     }
 
     @Override
-    public void error(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    public void error(final String message) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private boolean checkIfImage(String url) {
