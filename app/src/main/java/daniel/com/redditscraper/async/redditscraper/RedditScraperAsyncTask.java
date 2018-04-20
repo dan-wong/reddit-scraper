@@ -38,7 +38,8 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>
             urlConnection = (HttpURLConnection) url.openConnection();
 
             if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("Request Failed. HTTP Error Code: " + urlConnection.getResponseCode());
+                callback.error("Request returned " + urlConnection.getResponseCode());
+                return new ArrayList<>();
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));

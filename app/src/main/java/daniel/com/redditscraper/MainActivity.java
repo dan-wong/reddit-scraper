@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
         }
 
         if (!validImages.isEmpty()) {
-            int random = new Random().nextInt(validImages.size() - 1);
+            int random = new Random().nextInt(validImages.size());
             new ImageFromUrlAsyncTask(this).execute(validImages.get(random));
             return;
         }
@@ -79,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
         Toast.makeText(getApplicationContext(), "Subreddit has no images :(", Toast.LENGTH_SHORT).show();
         progressBar.setVisibility(View.INVISIBLE);
 
+    }
+
+    @Override
+    public void error(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private boolean checkIfImage(String url) {
