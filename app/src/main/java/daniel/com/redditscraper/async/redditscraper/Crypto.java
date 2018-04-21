@@ -72,10 +72,17 @@ public class Crypto {
     /// <param name="encryptedText">Base64 Encoded String</param>
     /// <param name="key">Secret Key</param>
     /// <returns>Decrypted String</returns>
-    public static String DeObfuscate(String encryptedText) throws KeyException, GeneralSecurityException, GeneralSecurityException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException {
-        String key = "ISTHISFORREALYESWHYNOT";
-        byte[] cipheredBytes = Base64.decode(encryptedText, Base64.DEFAULT);
-        byte[] keyBytes = getKeyBytes(key);
-        return new String(decrypt(cipheredBytes, keyBytes, keyBytes), characterEncoding);
+    public static String DeObfuscate(String encryptedText)  {
+        try {
+            String key = "ISTHISFORREALYESWHYNOT";
+            byte[] cipheredBytes = Base64.decode(encryptedText, Base64.DEFAULT);
+            byte[] keyBytes = getKeyBytes(key);
+            return new String(decrypt(cipheredBytes, keyBytes, keyBytes), characterEncoding);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return "";
+        }
     }
 }
