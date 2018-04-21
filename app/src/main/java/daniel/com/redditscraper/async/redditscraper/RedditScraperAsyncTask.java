@@ -16,8 +16,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>> {
-    private static final String TAG = "RedditScraperAsyncTask";
+import daniel.com.redditscraper.Image;
+
+public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<Image>> {
     private static final String URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d";
     private static final int LIMIT = 10;
 
@@ -28,8 +29,8 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>
     }
 
     @Override
-    protected List<String> doInBackground(String[] strings) {
-        List<String> imageUrls = new ArrayList<>();
+    protected List<Image> doInBackground(String[] strings) {
+        List<Image> images = new ArrayList<>();
 
         HttpURLConnection urlConnection = null;
         try {
@@ -57,7 +58,20 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>
                 String imageUrl = responseArray.getJSONObject(i)
                         .getJSONObject("data")
                         .getString("url");
-                imageUrls.add(imageUrl);
+
+                String title = responseArray.getJSONObject(i)
+                        .getJSONObject("data")
+                        .getString("title");
+
+                String author = responseArray.getJSONObject(i)
+                        .getJSONObject("data")
+                        .getString("author");
+
+                String score = responseArray.getJSONObject(i)
+                        .getJSONObject("data")
+                        .getString("score");
+
+                images.add(new Image(imageUrl, title, author, score));
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();
@@ -67,12 +81,12 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<String>
             }
         }
 
-        return imageUrls;
+        return images;
     }
 
     @Override
-    protected void onPostExecute(List<String> imageUrls) {
-        callback.imageUrls(imageUrls);
+    protected void onPostExecute(List<Image> images) {
+        callback.images(images);
     }
 
     @SuppressLint("DefaultLocale")
