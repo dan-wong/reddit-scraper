@@ -59,25 +59,13 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
             JSONObject jsonObject = new JSONObject(jsonString.toString());
             JSONArray responseArray = jsonObject.getJSONObject("data").getJSONArray("children");
             for (int i = 0; i < responseArray.length(); i++) {
-                String id = responseArray.getJSONObject(i)
-                        .getJSONObject("data")
-                        .getString("name");
+                JSONObject currentJSONObject = responseArray.getJSONObject(i);
 
-                String imageUrl = responseArray.getJSONObject(i)
-                        .getJSONObject("data")
-                        .getString("url");
-
-                String title = responseArray.getJSONObject(i)
-                        .getJSONObject("data")
-                        .getString("title");
-
-                String author = responseArray.getJSONObject(i)
-                        .getJSONObject("data")
-                        .getString("author");
-
-                String score = responseArray.getJSONObject(i)
-                        .getJSONObject("data")
-                        .getString("score");
+                String id = getId(currentJSONObject);
+                String imageUrl = getImageUrl(currentJSONObject);
+                String title = getTitle(currentJSONObject);
+                String author = getAuthor(currentJSONObject);
+                String score = getScore(currentJSONObject);
 
                 String commentUrl = "https://www.reddit.com" +
                         responseArray.getJSONObject(i)
@@ -96,6 +84,26 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
         }
 
         return images;
+    }
+
+    private String getId(JSONObject jsonObject) throws JSONException {
+        return jsonObject.getJSONObject("data").getString("name");
+    }
+
+    private String getImageUrl(JSONObject jsonObject) throws JSONException {
+        return jsonObject.getJSONObject("data").getString("url");
+    }
+
+    private String getTitle(JSONObject jsonObject) throws JSONException {
+        return jsonObject.getJSONObject("data").getString("title");
+    }
+
+    private String getAuthor(JSONObject jsonObject) throws JSONException {
+        return jsonObject.getJSONObject("data").getString("author");
+    }
+
+    private String getScore(JSONObject jsonObject) throws JSONException {
+        return jsonObject.getJSONObject("data").getString("score");
     }
 
     @Override
