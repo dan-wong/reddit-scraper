@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,6 +24,10 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
     private EditText subredditEditText;
     private ProgressBar progressBar;
 
+    private TextView titleTextView;
+    private TextView authorTextView;
+    private TextView scoreTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
 
         imageView = findViewById(R.id.imageView);
         subredditEditText = findViewById(R.id.subredditEditText);
+        titleTextView = findViewById(R.id.titleTextView);
+        authorTextView = findViewById(R.id.authorTextView);
+        scoreTextView = findViewById(R.id.scoreTextView);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
@@ -59,26 +67,34 @@ public class MainActivity extends AppCompatActivity implements ImageFromUrlCallb
     }
 
     @Override
-    public void imageUrls(List<String> imageUrls) {
-        List<String> validImages = new ArrayList<>();
+    public void images(List<Image> images) {
+        List<Image> validImages = new ArrayList<>();
 
         //Only ever null when url response is not OK which is handled by MainActivity#error
-        if (imageUrls == null) {
+        if (images == null) {
             return;
-        }
+        } else if (!images.isEmpty()) { //Not (null or empty)
+            for (int i = 0; i < images.size(); i++) {
+                Image currentImage = images.get(i);
 
-        if (!imageUrls.isEmpty()) { //Not (null or empty)
-            for (int i = 0; i < imageUrls.size(); i++) {
-                String url = imageUrls.get(i);
+                String url = currentImage.url;
                 if (checkIfImage(url)) {
-                    validImages.add(url);
+                    validImages.add(currentImage);
                 }
             }
         }
 
         if (!validImages.isEmpty()) {
             int random = new Random().nextInt(validImages.size());
-            new ImageFromUrlAsyncTask(this).execute(validImages.get(random));
+
+            Image selectedImage = validImages.get(random);
+            //Download the image and set it in the imageView
+            new ImageFromUrlAsyncTask(this).execute(selectedImage.url);
+
+            //Set the relevant details in the layout
+            titleTextView.setText(selectedImage.title);
+            authorTextView.setText(selectedImage.author);
+            scoreTextView.setText(selectedImage.score);
             return;
         }
 
