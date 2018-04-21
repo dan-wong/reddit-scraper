@@ -77,7 +77,7 @@
                         android:id="@+id/titleTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Title"
+                        android:text=""
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -87,7 +87,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_below="@+id/titleTextView"
-                        android:text="Author" />
+                        android:text=""
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/scoreTextView"
@@ -95,7 +96,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:text="Score" />
+                        android:text=""
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <ImageView
@@ -107,6 +109,11 @@
                     android:paddingTop="10dp"
                     android:scaleType="fitCenter"
                     app:srcCompat="@mipmap/ic_launcher" />
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/commentsListView"/>
 
             </LinearLayout>
         </ScrollView>

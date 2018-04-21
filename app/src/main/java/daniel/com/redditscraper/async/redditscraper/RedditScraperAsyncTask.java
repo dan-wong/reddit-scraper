@@ -71,7 +71,13 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<Image>>
                         .getJSONObject("data")
                         .getString("score");
 
-                images.add(new Image(imageUrl, title, author, score));
+                String commentUrl = "https://www.reddit.com" +
+                        responseArray.getJSONObject(i)
+                        .getJSONObject("data")
+                        .getString("permalink") +
+                        ".json";
+
+                images.add(new Image(imageUrl, title, author, score, commentUrl));
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();
