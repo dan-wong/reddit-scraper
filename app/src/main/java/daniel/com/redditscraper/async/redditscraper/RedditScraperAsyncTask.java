@@ -18,23 +18,27 @@ import java.util.List;
 
 import daniel.com.redditscraper.Image;
 
-public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<Image>> {
-    private static final String URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d";
-    private static final int LIMIT = 10;
+public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
+    private static final String URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d&after=%s";
+    private static final int LIMIT = 50;
 
     private RedditScraperCallback callback;
+    private String subreddit;
+    private String lastImageId;
 
-    public RedditScraperAsyncTask(RedditScraperCallback callback) {
+    public RedditScraperAsyncTask(RedditScraperCallback callback, String subreddit, String lastImageId) {
         this.callback = callback;
+        this.subreddit = subreddit;
+        this.lastImageId = lastImageId;
     }
 
     @Override
-    protected List<Image> doInBackground(String[] strings) {
+    protected List<Image> doInBackground(Void... voids) {
         List<Image> images = new ArrayList<>();
 
         HttpURLConnection urlConnection = null;
         try {
-            URL url = formatRequestUrl(strings[0]);
+            URL url = formatRequestUrl(subreddit, lastImageId);
 
             urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -55,6 +59,10 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<Image>>
             JSONObject jsonObject = new JSONObject(jsonString.toString());
             JSONArray responseArray = jsonObject.getJSONObject("data").getJSONArray("children");
             for (int i = 0; i < responseArray.length(); i++) {
+                String id = responseArray.getJSONObject(i)
+                        .getJSONObject("data")
+                        .getString("name");
+
                 String imageUrl = responseArray.getJSONObject(i)
                         .getJSONObject("data")
                         .getString("url");
@@ -77,7 +85,7 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<Image>>
                         .getString("permalink") +
                         ".json";
 
-                images.add(new Image(imageUrl, title, author, score, commentUrl));
+                images.add(new Image(id, imageUrl, title, author, score, commentUrl));
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();
@@ -96,7 +104,7 @@ public class RedditScraperAsyncTask extends AsyncTask<String, Void, List<Image>>
     }
 
     @SuppressLint("DefaultLocale")
-    private URL formatRequestUrl(String subreddit) throws MalformedURLException {
-        return new URL(String.format(URL_FORMAT, subreddit, LIMIT));
+    private URL formatRequestUrl(String subreddit, String lastImageId) throws MalformedURLException {
+        return new URL(String.format(URL_FORMAT, subreddit, LIMIT, lastImageId));
     }
 }

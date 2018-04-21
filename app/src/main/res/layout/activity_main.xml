@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="104dp" />
+            android:layout_marginTop="158dp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -85,19 +85,17 @@
                         android:id="@+id/authorTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_below="@+id/titleTextView"
-                        android:text=""
-                        android:layout_alignParentLeft="true" />
+                        android:text="" />
 
                     <TextView
                         android:id="@+id/scoreTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:text=""
-                        android:layout_alignParentRight="true" />
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true" />
                 </RelativeLayout>
 
                 <ImageView
