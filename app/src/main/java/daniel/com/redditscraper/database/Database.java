@@ -59,6 +59,11 @@ public class Database implements RedditScraperCallback {
 
     @Override
     public void images(List<Image> images) {
+        if (images == null) {
+            listener.error("Subreddit has no images :(");
+            return;
+        }
+
         Iterator<Image> imageIterator = images.iterator();
         while (imageIterator.hasNext()) {
             if (!checkIfImage(imageIterator.next().url)) {

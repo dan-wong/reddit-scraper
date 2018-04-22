@@ -86,6 +86,16 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
         return images;
     }
 
+    @Override
+    protected void onPostExecute(List<Image> images) {
+        callback.images(images);
+    }
+
+    @SuppressLint("DefaultLocale")
+    private URL formatRequestUrl(String subreddit, String lastImageId) throws MalformedURLException {
+        return new URL(String.format(URL_FORMAT, subreddit, LIMIT, lastImageId));
+    }
+
     private String getId(JSONObject jsonObject) throws JSONException {
         return jsonObject.getJSONObject("data").getString("name");
     }
@@ -104,15 +114,5 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
 
     private String getScore(JSONObject jsonObject) throws JSONException {
         return jsonObject.getJSONObject("data").getString("score");
-    }
-
-    @Override
-    protected void onPostExecute(List<Image> images) {
-        callback.images(images);
-    }
-
-    @SuppressLint("DefaultLocale")
-    private URL formatRequestUrl(String subreddit, String lastImageId) throws MalformedURLException {
-        return new URL(String.format(URL_FORMAT, subreddit, LIMIT, lastImageId));
     }
 }
