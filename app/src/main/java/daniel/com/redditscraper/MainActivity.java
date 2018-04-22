@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity
     private TextView scoreTextView;
     private ListView commentsListView;
 
+    private LinearLayout imageLayout;
+
     private Database database;
 
     @Override
@@ -50,11 +53,11 @@ public class MainActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
+        imageLayout = findViewById(R.id.imageLayout);
+        imageLayout.setVisibility(View.INVISIBLE);
+
         commentsListView = findViewById(R.id.commentsListView);
         setListViewHeightBasedOnChildren(commentsListView);
-
-        //Initially hide imageView component
-        imageView.setVisibility(View.INVISIBLE);
 
         database = Database.getInstance();
         database.addListener(this);
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(getApplicationContext(), "Subreddit cannot be empty!", Toast.LENGTH_SHORT).show();
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
-                    imageView.setVisibility(View.INVISIBLE);
+                    imageLayout.setVisibility(View.VISIBLE);
                     clearTitleTextViews();
                     database.getImage(subreddit);
                 }
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setImage(Bitmap image) {
         progressBar.setVisibility(View.INVISIBLE);
-        imageView.setVisibility(View.VISIBLE);
+        imageLayout.setVisibility(View.VISIBLE);
         imageView.setImageBitmap(image);
     }
 
