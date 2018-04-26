@@ -1,4 +1,4 @@
-package daniel.com.redditscraper.async.commentsfromurl;
+package com.daniel.async.commentsfromurl;
 
 /**
  * Created by theooswanditosw164 on 21/04/18.

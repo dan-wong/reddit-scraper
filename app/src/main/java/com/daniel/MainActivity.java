@@ -1,4 +1,4 @@
-package daniel.com.redditscraper;
+package com.daniel;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -16,13 +16,15 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import daniel.com.redditscraper.async.commentsfromurl.Comment;
-import daniel.com.redditscraper.async.commentsfromurl.CommentsFromUrlAsyncTask;
-import daniel.com.redditscraper.async.commentsfromurl.CommentsFromUrlCallback;
-import daniel.com.redditscraper.async.imagefromurl.ImageFromUrlAsyncTask;
-import daniel.com.redditscraper.async.imagefromurl.ImageFromUrlCallback;
-import daniel.com.redditscraper.database.Database;
-import daniel.com.redditscraper.database.DatabaseCallback;
+import com.daniel.async.commentsfromurl.Comment;
+import com.daniel.async.commentsfromurl.CommentsFromUrlAsyncTask;
+import com.daniel.async.commentsfromurl.CommentsFromUrlCallback;
+import com.daniel.async.imagefromurl.ImageFromUrlAsyncTask;
+import com.daniel.async.imagefromurl.ImageFromUrlCallback;
+import com.daniel.database.Database;
+import com.daniel.database.DatabaseCallback;
+
+import daniel.com.redditscraper.R;
 
 public class MainActivity extends AppCompatActivity
         implements DatabaseCallback, ImageFromUrlCallback, CommentsFromUrlCallback {

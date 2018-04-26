@@ -1,13 +1,13 @@
-package daniel.com.redditscraper.database;
+package com.daniel.database;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import daniel.com.redditscraper.Image;
-import daniel.com.redditscraper.async.redditscraper.RedditScraperAsyncTask;
-import daniel.com.redditscraper.async.redditscraper.RedditScraperCallback;
+import com.daniel.Image;
+import com.daniel.async.redditscraper.RedditScraperAsyncTask;
+import com.daniel.async.redditscraper.RedditScraperCallback;
 
 //Singleton
 public class Database implements RedditScraperCallback {

@@ -1,4 +1,4 @@
-package daniel.com.redditscraper.async.commentsfromurl;
+package com.daniel.async.commentsfromurl;
 
 import java.util.List;
 

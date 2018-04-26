@@ -1,4 +1,4 @@
-package daniel.com.redditscraper;
+package com.daniel;
 
 public class Image {
     public String id;

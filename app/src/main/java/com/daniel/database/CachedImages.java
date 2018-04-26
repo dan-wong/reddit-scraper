@@ -1,8 +1,8 @@
-package daniel.com.redditscraper.database;
+package com.daniel.database;
 
 import java.util.List;
 
-import daniel.com.redditscraper.Image;
+import com.daniel.Image;
 
 public class CachedImages {
     public List<Image> images;

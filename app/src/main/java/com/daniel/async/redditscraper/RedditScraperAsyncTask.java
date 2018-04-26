@@ -1,4 +1,4 @@
-package daniel.com.redditscraper.async.redditscraper;
+package com.daniel.async.redditscraper;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -16,7 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import daniel.com.redditscraper.Image;
+import com.daniel.Image;
 
 public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
     private static final String URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d&after=%s";

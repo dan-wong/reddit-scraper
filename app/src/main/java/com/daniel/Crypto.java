@@ -1,4 +1,4 @@
-package daniel.com.redditscraper;
+package com.daniel;
 
 import android.util.Base64;
 

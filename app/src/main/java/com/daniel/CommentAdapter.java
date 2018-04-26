@@ -1,4 +1,4 @@
-package daniel.com.redditscraper;
+package com.daniel;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import daniel.com.redditscraper.async.commentsfromurl.Comment;
+import com.daniel.async.commentsfromurl.Comment;
+
+import daniel.com.redditscraper.R;
 
 /**
  * Created by theooswanditosw164 on 21/04/18.

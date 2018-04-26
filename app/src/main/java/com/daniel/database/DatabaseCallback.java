@@ -1,6 +1,6 @@
-package daniel.com.redditscraper.database;
+package com.daniel.database;
 
-import daniel.com.redditscraper.Image;
+import com.daniel.Image;
 
 public interface DatabaseCallback {
     void imageReturned(Image image);

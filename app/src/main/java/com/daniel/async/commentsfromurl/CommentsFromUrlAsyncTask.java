@@ -1,10 +1,6 @@
-package daniel.com.redditscraper.async.commentsfromurl;
+package com.daniel.async.commentsfromurl;
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,15 +8,11 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import daniel.com.redditscraper.Image;
 
 public class CommentsFromUrlAsyncTask extends AsyncTask<Void, Void, List<Comment>> {
     private CommentsFromUrlCallback callback;
