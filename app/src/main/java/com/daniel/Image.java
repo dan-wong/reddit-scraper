@@ -1,5 +1,7 @@
 package com.daniel;
 
+import android.graphics.Bitmap;
+
 public class Image {
     public String id;
     public String url;
@@ -7,6 +9,8 @@ public class Image {
     public String author;
     public String score;
     public String commentsUrl;
+
+    public Bitmap bitmap = null;
 
     public Image(String id, String url, String title, String author, String score, String commentsUrl) {
         this.id = id;

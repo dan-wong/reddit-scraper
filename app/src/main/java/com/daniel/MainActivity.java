@@ -1,7 +1,12 @@
 package com.daniel;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.List;
 
 import com.daniel.async.commentsfromurl.Comment;
@@ -23,11 +29,21 @@ import com.daniel.async.imagefromurl.ImageFromUrlAsyncTask;
 import com.daniel.async.imagefromurl.ImageFromUrlCallback;
 import com.daniel.database.Database;
 import com.daniel.database.DatabaseCallback;
+import com.daniel.filewriter.FileWriter;
+import com.daniel.filewriter.FileWriterAsyncTask;
+import com.daniel.filewriter.FileWriterCallback;
 
 import daniel.com.redditscraper.R;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class MainActivity extends AppCompatActivity
-        implements DatabaseCallback, ImageFromUrlCallback, CommentsFromUrlCallback {
+        implements DatabaseCallback, ImageFromUrlCallback, CommentsFromUrlCallback, FileWriterCallback {
     private ImageView imageView;
     private EditText subredditEditText;
     private ProgressBar progressBar;
@@ -35,10 +51,10 @@ public class MainActivity extends AppCompatActivity
     private TextView authorTextView;
     private TextView scoreTextView;
     private ListView commentsListView;
-
     private LinearLayout imageLayout;
 
     private Database database;
+    private Image currentImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +92,69 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                MainActivityPermissionsDispatcher.saveImageToDeviceWithPermissionCheck(MainActivity.this);
+                return true;
+            }
+        });
     }
 
-    private void clearTitleTextViews() {
-        titleTextView.setText("");
-        authorTextView.setText("");
-        scoreTextView.setText("");
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void saveImageToDevice() {
+        if (FileWriter.isExternalStorageWritable()) {
+            final File directory = FileWriter.getPublicAlbumStorageDir(this);
+            if (currentImage == null) {
+                Toast.makeText(this, "No current image!", Toast.LENGTH_SHORT).show();
+            } else { //Try writing to file
+                new AlertDialog.Builder(this)
+                        .setTitle("Save Image")
+                        .setMessage("Would you like to save this image?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                new FileWriterAsyncTask(directory, currentImage, MainActivity.this).execute();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        } else {
+            Toast.makeText(this, "External Storage not mounted!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showRationaleForExternalStoragePermission(final PermissionRequest request) {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.permission_storage_rationale)
+                .setPositiveButton(R.string.button_allow, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        request.proceed();
+                    }
+                })
+                .setNegativeButton(R.string.button_deny, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        request.cancel();
+                    }
+                })
+                .show();
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showDeniedExternalStorage() {
+        Toast.makeText(this, R.string.permission_storage_denied, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showNeverAskAgainExternalStorage() {
+        Toast.makeText(this, R.string.permission_storage_neverask, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -89,6 +162,7 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.INVISIBLE);
         imageLayout.setVisibility(View.VISIBLE);
         imageView.setImageBitmap(image);
+        this.currentImage.bitmap = image;
     }
 
     @Override
@@ -108,6 +182,8 @@ public class MainActivity extends AppCompatActivity
         titleTextView.setText(image.title);
         authorTextView.setText(image.author);
         scoreTextView.setText(image.score);
+
+        this.currentImage = image;
     }
 
     @Override
@@ -119,6 +195,21 @@ public class MainActivity extends AppCompatActivity
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    @Override
+    public void result(Boolean result) {
+        if (result) {
+            Toast.makeText(this, "Image saved", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Unable to write to device!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     /**** Method for Setting the Height of the ListView dynamically.
@@ -144,5 +235,11 @@ public class MainActivity extends AppCompatActivity
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
+    }
+
+    private void clearTitleTextViews() {
+        titleTextView.setText("");
+        authorTextView.setText("");
+        scoreTextView.setText("");
     }
 }

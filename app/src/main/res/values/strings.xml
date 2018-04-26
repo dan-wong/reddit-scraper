@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Reddit Scraper</string>
+    <string name="app_name_folder">RedditScraper</string>
     <string name="subreddit">Subreddit</string>
     <string name="get_picture">Get Picture</string>
     <string name="imageview">imageview</string>
+    <string name="permission_storage_rationale">The storage permission is required to save the image to your local images directory.</string>
+    <string name="permission_storage_denied">Storage Permission denied! Cannot save image.</string>
+    <string name="permission_storage_neverask">We will never ask for the storage permission again. You will not be able to save images.</string>
+    <string name="button_allow">Allow</string>
+    <string name="button_deny">Deny</string>
 </resources>
