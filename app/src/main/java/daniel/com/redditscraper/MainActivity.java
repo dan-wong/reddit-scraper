@@ -93,13 +93,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setCommentsList(List<Comment> comments) {
-        List<String> stringList = new ArrayList<>();
-        for (Comment c: comments){
-            stringList.add(c.toString());
-        }
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, stringList);
+        CommentAdapter arrayAdapter = new CommentAdapter(this, comments);
         commentsListView.setAdapter(arrayAdapter);
         setListViewHeightBasedOnChildren(commentsListView);
     }
