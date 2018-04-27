@@ -1,4 +1,4 @@
-package com.daniel;
+package com.daniel.database;
 
 import android.graphics.Bitmap;
 

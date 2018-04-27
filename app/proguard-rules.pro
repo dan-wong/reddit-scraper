@@ -12,8 +12,8 @@
 -dontskipnonpubliclibraryclasses
 -verbose
 
--optimizationpasses 5
--allowaccessmodification
+#-optimizationpasses 5
+#-allowaccessmodification
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -79,7 +79,7 @@
   public *;
 }
 
--keep public class org.apache.commons.lang3.StringUtils
--keep public class org.apache.commons.lang3.StringUtils {
+-keep public class org.apache.commons.lang3.**
+-keep public class org.apache.commons.lang3.** {
     public protected private *;
 }

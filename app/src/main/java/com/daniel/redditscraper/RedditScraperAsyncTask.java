@@ -1,9 +1,9 @@
-package com.daniel.async.redditscraper;
+package com.daniel.redditscraper;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
-import com.daniel.Image;
+import com.daniel.database.Image;
 
 import org.json.JSONArray;
 import org.json.JSONException;

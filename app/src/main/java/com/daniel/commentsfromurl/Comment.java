@@ -1,4 +1,4 @@
-package com.daniel.async.commentsfromurl;
+package com.daniel.commentsfromurl;
 
 /**
  * Created by theooswanditosw164 on 21/04/18.

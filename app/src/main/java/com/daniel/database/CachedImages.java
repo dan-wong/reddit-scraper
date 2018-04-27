@@ -2,8 +2,6 @@ package com.daniel.database;
 
 import java.util.List;
 
-import com.daniel.Image;
-
 public class CachedImages {
     public List<Image> images;
     private String lastImageId;

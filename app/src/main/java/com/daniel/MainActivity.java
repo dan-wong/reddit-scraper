@@ -23,11 +23,13 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.daniel.async.commentsfromurl.Comment;
-import com.daniel.async.commentsfromurl.CommentsFromUrlAsyncTask;
-import com.daniel.async.commentsfromurl.CommentsFromUrlCallback;
+import com.daniel.commentsfromurl.Comment;
+import com.daniel.commentsfromurl.CommentAdapter;
+import com.daniel.commentsfromurl.CommentsFromUrlAsyncTask;
+import com.daniel.commentsfromurl.CommentsFromUrlCallback;
 import com.daniel.database.Database;
 import com.daniel.database.DatabaseCallback;
+import com.daniel.database.Image;
 import com.daniel.filewriter.FileWriter;
 import com.daniel.filewriter.FileWriterAsyncTask;
 import com.daniel.filewriter.FileWriterCallback;
@@ -49,9 +51,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView imageView;
     private EditText subredditEditText;
     private ProgressBar progressBar;
-    private TextView titleTextView;
-    private TextView authorTextView;
-    private TextView scoreTextView;
+    private TextView titleTextView, authorTextView, scoreTextView;
     private ListView commentsListView;
     private LinearLayout imageLayout;
 
@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
         });
+
+        Toast.makeText(this, Crypto.generateKey(), Toast.LENGTH_SHORT).show();
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity
     void showNeverAskAgainExternalStorage() {
         Toast.makeText(this, R.string.permission_storage_neverask, Toast.LENGTH_SHORT).show();
     }
-    
+
     @Override
     public void setCommentsList(List<Comment> comments) {
         CommentAdapter arrayAdapter = new CommentAdapter(this, comments);
@@ -178,8 +180,7 @@ public class MainActivity extends AppCompatActivity
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Toast.makeText(MainActivity.this, R.string.failed_load_image, Toast.LENGTH_SHORT).show();
+                        error(getString(R.string.failed_load_image));
                         return false;
                     }
 

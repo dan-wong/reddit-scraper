@@ -1,4 +1,4 @@
-package com.daniel.async.commentsfromurl;
+package com.daniel.commentsfromurl;
 
 import android.os.AsyncTask;
 

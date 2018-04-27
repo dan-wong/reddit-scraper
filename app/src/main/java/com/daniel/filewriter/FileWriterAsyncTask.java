@@ -3,7 +3,7 @@ package com.daniel.filewriter;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
-import com.daniel.Image;
+import com.daniel.database.Image;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

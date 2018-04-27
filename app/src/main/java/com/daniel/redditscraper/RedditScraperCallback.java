@@ -1,8 +1,8 @@
-package com.daniel.async.redditscraper;
+package com.daniel.redditscraper;
+
+import com.daniel.database.Image;
 
 import java.util.List;
-
-import com.daniel.Image;
 
 public interface RedditScraperCallback {
     void images(List<Image> images);
