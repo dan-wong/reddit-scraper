@@ -89,7 +89,7 @@ public class Crypto {
         String keyPartTwo = cipher("m2yfMs3hPXyM7UhLGpSAQyNXvfkWn925gC5MuXptcn34SakcbdKh8EJ", 17);
 
         String[] searchList = new String[1];
-        searchList[0] = "GpS";
+        searchList[0] = "dCp";
         String[] replaceList = new String[1];
         replaceList[0] = "gPs";
 
