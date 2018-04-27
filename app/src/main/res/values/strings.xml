@@ -19,4 +19,5 @@
     <string name="no_current_image_error">No current image!</string>
     <string name="empty_subreddit_error">Subreddit cannot be empty!</string>
     <string name="keyGen">m2yfMs3hPXyM7UhLGpSAQyNXvfkWn925gC5MuXptcn34SakcbdKh8EJ</string>
+    <string name="failed_load_image">Failed to load image :(</string>
 </resources>

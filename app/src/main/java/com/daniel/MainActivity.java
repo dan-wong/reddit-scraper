@@ -2,9 +2,10 @@ package com.daniel;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,11 +19,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.daniel.async.commentsfromurl.Comment;
 import com.daniel.async.commentsfromurl.CommentsFromUrlAsyncTask;
 import com.daniel.async.commentsfromurl.CommentsFromUrlCallback;
-import com.daniel.async.imagefromurl.ImageFromUrlAsyncTask;
-import com.daniel.async.imagefromurl.ImageFromUrlCallback;
 import com.daniel.database.Database;
 import com.daniel.database.DatabaseCallback;
 import com.daniel.filewriter.FileWriter;
@@ -42,7 +45,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity
-        implements DatabaseCallback, ImageFromUrlCallback, CommentsFromUrlCallback, FileWriterCallback {
+        implements DatabaseCallback, CommentsFromUrlCallback, FileWriterCallback {
     private ImageView imageView;
     private EditText subredditEditText;
     private ProgressBar progressBar;
@@ -155,15 +158,7 @@ public class MainActivity extends AppCompatActivity
     void showNeverAskAgainExternalStorage() {
         Toast.makeText(this, R.string.permission_storage_neverask, Toast.LENGTH_SHORT).show();
     }
-
-    @Override
-    public void setImage(Bitmap image) {
-        progressBar.setVisibility(View.INVISIBLE);
-        imageLayout.setVisibility(View.VISIBLE);
-        imageView.setImageBitmap(image);
-        this.currentImage.bitmap = image;
-    }
-
+    
     @Override
     public void setCommentsList(List<Comment> comments) {
         CommentAdapter arrayAdapter = new CommentAdapter(this, comments);
@@ -172,15 +167,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void imageReturned(Image image) {
-        //Download the image and set it in the imageView
-        new ImageFromUrlAsyncTask(this).execute(image.url);
-        new CommentsFromUrlAsyncTask(this, image.commentsUrl).execute();
-
+    public void imageReturned(final Image image) {
         //Set the relevant details in the layout
         titleTextView.setText(image.title);
         authorTextView.setText(image.author);
         scoreTextView.setText(image.score);
+
+        GlideApp.with(this)
+                .load(image.url)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(MainActivity.this, R.string.failed_load_image, Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        new CommentsFromUrlAsyncTask(MainActivity.this, image.commentsUrl).execute();
+                        return false;
+                    }
+                })
+                .into(imageView);
 
         this.currentImage = image;
     }
