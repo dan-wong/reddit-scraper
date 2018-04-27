@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     private TextView titleTextView, authorTextView, scoreTextView;
     private ListView commentsListView;
     private LinearLayout imageLayout;
+    private Button getPictureButton;
 
     private Database database;
     private Image currentImage = null;
@@ -80,7 +82,9 @@ public class MainActivity extends AppCompatActivity
         database = Database.getInstance();
         database.addListener(this);
 
-        findViewById(R.id.getPictureBtn).setOnClickListener(new View.OnClickListener() {
+        getPictureButton = findViewById(R.id.getPictureBtn);
+
+        getPictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String subreddit = subredditEditText.getText().toString().trim();
@@ -89,6 +93,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     imageLayout.setVisibility(View.VISIBLE);
+                    getPictureButton.setEnabled(false);
                     clearTitleTextViews();
                     database.getImage(subreddit);
                 }
@@ -181,12 +186,14 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         error(getString(R.string.failed_load_image));
+                        getPictureButton.setEnabled(true);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         progressBar.setVisibility(View.INVISIBLE);
+                        getPictureButton.setEnabled(true);
                         new CommentsFromUrlAsyncTask(MainActivity.this, image.commentsUrl).execute();
                         return false;
                     }

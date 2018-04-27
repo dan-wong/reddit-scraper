@@ -79,7 +79,6 @@
   public *;
 }
 
--keep public class org.apache.commons.lang3.**
--keep public class org.apache.commons.lang3.** {
+-keepclassmembers public class org.apache.commons.lang3.** {
     public protected private *;
 }
