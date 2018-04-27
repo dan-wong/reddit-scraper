@@ -3,6 +3,8 @@ package com.daniel.async.redditscraper;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
+import com.daniel.Image;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,10 +18,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.daniel.Image;
-
 public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
-    private static final String URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d&after=%s";
+    private static final String ENDPOINT_URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d&after=%s";
+    private static final String ENDPOINT_COMMENT_URL_FORMAT = "https://www.reddit.com%s.json";
     private static final int LIMIT = 50;
 
     private RedditScraperCallback callback;
@@ -67,11 +68,7 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
                 String author = getAuthor(currentJSONObject);
                 String score = getScore(currentJSONObject);
 
-                String commentUrl = "https://www.reddit.com" +
-                        responseArray.getJSONObject(i)
-                        .getJSONObject("data")
-                        .getString("permalink") +
-                        ".json";
+                String commentUrl = String.format(ENDPOINT_COMMENT_URL_FORMAT, responseArray.getJSONObject(i).getJSONObject("data").getString("permalink"));
 
                 images.add(new Image(id, imageUrl, title, author, score, commentUrl));
             }
@@ -93,7 +90,7 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
 
     @SuppressLint("DefaultLocale")
     private URL formatRequestUrl(String subreddit, String lastImageId) throws MalformedURLException {
-        return new URL(String.format(URL_FORMAT, subreddit, LIMIT, lastImageId));
+        return new URL(String.format(ENDPOINT_URL_FORMAT, subreddit, LIMIT, lastImageId));
     }
 
     private String getId(JSONObject jsonObject) throws JSONException {

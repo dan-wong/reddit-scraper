@@ -35,4 +35,5 @@ dependencies {
         exclude module: "support-v13"
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.2.0"
+    implementation files('libs/commons-lang-3-3.7.jar')
 }

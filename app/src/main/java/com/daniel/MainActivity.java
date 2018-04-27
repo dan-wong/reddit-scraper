@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.util.List;
-
 import com.daniel.async.commentsfromurl.Comment;
 import com.daniel.async.commentsfromurl.CommentsFromUrlAsyncTask;
 import com.daniel.async.commentsfromurl.CommentsFromUrlCallback;
@@ -32,6 +28,9 @@ import com.daniel.database.DatabaseCallback;
 import com.daniel.filewriter.FileWriter;
 import com.daniel.filewriter.FileWriterAsyncTask;
 import com.daniel.filewriter.FileWriterCallback;
+
+import java.io.File;
+import java.util.List;
 
 import daniel.com.redditscraper.R;
 import permissions.dispatcher.NeedsPermission;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 String subreddit = subredditEditText.getText().toString().trim();
                 if (subreddit.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Subreddit cannot be empty!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.empty_subreddit_error, Toast.LENGTH_SHORT).show();
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     imageLayout.setVisibility(View.VISIBLE);
@@ -107,17 +106,17 @@ public class MainActivity extends AppCompatActivity
         if (FileWriter.isExternalStorageWritable()) {
             final File directory = FileWriter.getPublicAlbumStorageDir(this);
             if (currentImage == null) {
-                Toast.makeText(this, "No current image!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.no_current_image_error, Toast.LENGTH_SHORT).show();
             } else { //Try writing to file
                 new AlertDialog.Builder(this)
-                        .setTitle("Save Image")
-                        .setMessage("Would you like to save this image?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.save_image_title)
+                        .setMessage(R.string.save_image_prompt)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 new FileWriterAsyncTask(directory, currentImage, MainActivity.this).execute();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity
                         .show();
             }
         } else {
-            Toast.makeText(this, "External Storage not mounted!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.external_storage_not_mounted, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -200,9 +199,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void result(Boolean result) {
         if (result) {
-            Toast.makeText(this, "Image saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.write_device_success, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Unable to write to device!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.write_device_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
