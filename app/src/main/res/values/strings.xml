@@ -20,4 +20,7 @@
     <string name="empty_subreddit_error">Subreddit cannot be empty!</string>
     <string name="keyGen">m2yfMs3hPXyM7UhLGpSAQyNXvfkWn925gC5MuXptcn34SakcbdKh8EJ</string>
     <string name="failed_load_image">Failed to load image :(</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

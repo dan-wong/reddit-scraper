@@ -2,41 +2,25 @@ package com.daniel;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.daniel.commentsfromurl.Comment;
-import com.daniel.commentsfromurl.CommentAdapter;
-import com.daniel.commentsfromurl.CommentsFromUrlAsyncTask;
-import com.daniel.commentsfromurl.CommentsFromUrlCallback;
 import com.daniel.database.Database;
 import com.daniel.database.DatabaseCallback;
 import com.daniel.database.Image;
 import com.daniel.filewriter.FileWriter;
 import com.daniel.filewriter.FileWriterAsyncTask;
 import com.daniel.filewriter.FileWriterCallback;
+import com.daniel.fragments.ImageFragment;
+import com.daniel.fragments.ImageFragmentInterface;
 
 import java.io.File;
-import java.util.List;
 
 import daniel.com.redditscraper.R;
 import permissions.dispatcher.NeedsPermission;
@@ -48,36 +32,21 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity
-        implements DatabaseCallback, CommentsFromUrlCallback, FileWriterCallback {
-    private ImageView imageView;
+        implements DatabaseCallback, FileWriterCallback, ImageFragment.OnFragmentInteractionListener {
     private EditText subredditEditText;
-    private ProgressBar progressBar;
-    private TextView titleTextView, authorTextView, scoreTextView;
-    private ListView commentsListView;
-    private LinearLayout imageLayout;
     private Button getPictureButton;
 
     private Database database;
     private Image currentImage = null;
+
+    private ImageFragmentInterface imageFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imageView = findViewById(R.id.imageView);
         subredditEditText = findViewById(R.id.subredditEditText);
-        titleTextView = findViewById(R.id.titleTextView);
-        authorTextView = findViewById(R.id.authorTextView);
-        scoreTextView = findViewById(R.id.scoreTextView);
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
-
-        imageLayout = findViewById(R.id.imageLayout);
-        imageLayout.setVisibility(View.INVISIBLE);
-
-        commentsListView = findViewById(R.id.commentsListView);
-        setListViewHeightBasedOnChildren(commentsListView);
 
         database = Database.getInstance();
         database.addListener(this);
@@ -91,24 +60,33 @@ public class MainActivity extends AppCompatActivity
                 if (subreddit.isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.empty_subreddit_error, Toast.LENGTH_SHORT).show();
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    imageLayout.setVisibility(View.VISIBLE);
+                    findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                     getPictureButton.setEnabled(false);
-                    clearTitleTextViews();
                     database.getImage(subreddit);
                 }
             }
         });
 
-        imageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                MainActivityPermissionsDispatcher.saveImageToDeviceWithPermissionCheck(MainActivity.this);
-                return true;
-            }
-        });
+        imageFragment = (ImageFragment) getSupportFragmentManager().findFragmentById(R.id.image_fragment);
 
         Toast.makeText(this, Crypto.generateKey(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void imageReturned(Image image) {
+        imageFragment.newImage(image);
+        currentImage = image;
+    }
+
+    @Override
+    public void error(final String message) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -167,54 +145,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void setCommentsList(List<Comment> comments) {
-        CommentAdapter arrayAdapter = new CommentAdapter(this, comments);
-        commentsListView.setAdapter(arrayAdapter);
-        setListViewHeightBasedOnChildren(commentsListView);
-    }
-
-    @Override
-    public void imageReturned(final Image image) {
-        //Set the relevant details in the layout
-        titleTextView.setText(image.title);
-        authorTextView.setText(image.author);
-        scoreTextView.setText(image.score);
-
-        GlideApp.with(this)
-                .load(image.url)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        error(getString(R.string.failed_load_image));
-                        getPictureButton.setEnabled(true);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        getPictureButton.setEnabled(true);
-                        new CommentsFromUrlAsyncTask(MainActivity.this, image.commentsUrl).execute();
-                        return false;
-                    }
-                })
-                .into(imageView);
-
-        this.currentImage = image;
-    }
-
-    @Override
-    public void error(final String message) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
-
-    @Override
     public void result(Boolean result) {
         if (result) {
             Toast.makeText(this, R.string.write_device_success, Toast.LENGTH_SHORT).show();
@@ -229,34 +159,13 @@ public class MainActivity extends AppCompatActivity
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    /**** Method for Setting the Height of the ListView dynamically.
-     **** Hack to fix the issue of not showing all the items of the ListView
-     **** when placed inside a ScrollView
-     **** https://stackoverflow.com/questions/18367522/android-list-view-inside-a-scroll-view ****/
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return;
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
+    @Override
+    public void imageLoaded() {
+        getPictureButton.setEnabled(true);
     }
 
-    private void clearTitleTextViews() {
-        titleTextView.setText("");
-        authorTextView.setText("");
-        scoreTextView.setText("");
+    @Override
+    public void saveImage() {
+        MainActivityPermissionsDispatcher.saveImageToDeviceWithPermissionCheck(this);
     }
 }
