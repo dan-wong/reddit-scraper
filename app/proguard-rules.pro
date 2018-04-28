@@ -82,3 +82,6 @@
 -keepclassmembers public class org.apache.commons.lang3.** {
     public protected private *;
 }
+
+-keep public class com.amazonaws.**
+-dontwarn com.amazonaws.**
