@@ -1,4 +1,4 @@
-package com.daniel.redditscraper;
+package com.daniel.async.redditscraper;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;

@@ -1,4 +1,4 @@
-package com.daniel.filewriter;
+package com.daniel.async.filewriter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

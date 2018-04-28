@@ -11,12 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.daniel.async.filewriter.FileWriter;
+import com.daniel.async.filewriter.FileWriterAsyncTask;
+import com.daniel.async.filewriter.FileWriterCallback;
 import com.daniel.database.Database;
 import com.daniel.database.DatabaseCallback;
 import com.daniel.database.Image;
-import com.daniel.filewriter.FileWriter;
-import com.daniel.filewriter.FileWriterAsyncTask;
-import com.daniel.filewriter.FileWriterCallback;
 import com.daniel.fragments.ImageFragment;
 import com.daniel.fragments.ImageFragmentInterface;
 

@@ -21,12 +21,12 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.daniel.GlideApp;
-import com.daniel.commentsfromurl.Comment;
-import com.daniel.commentsfromurl.CommentAdapter;
-import com.daniel.commentsfromurl.CommentsFromUrlAsyncTask;
-import com.daniel.commentsfromurl.CommentsFromUrlCallback;
+import com.daniel.async.commentsfromurl.Comment;
+import com.daniel.async.commentsfromurl.CommentAdapter;
+import com.daniel.async.commentsfromurl.CommentsFromUrlAsyncTask;
+import com.daniel.async.commentsfromurl.CommentsFromUrlCallback;
 import com.daniel.database.Image;
+import com.daniel.glide.GlideApp;
 
 import java.util.List;
 

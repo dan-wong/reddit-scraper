@@ -1,7 +1,7 @@
 package com.daniel.database;
 
-import com.daniel.redditscraper.RedditScraperAsyncTask;
-import com.daniel.redditscraper.RedditScraperCallback;
+import com.daniel.async.redditscraper.RedditScraperAsyncTask;
+import com.daniel.async.redditscraper.RedditScraperCallback;
 
 import java.util.HashMap;
 import java.util.Iterator;
