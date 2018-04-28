@@ -11,6 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
+import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
+import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
 import com.daniel.async.filewriter.FileWriter;
 import com.daniel.async.filewriter.FileWriterAsyncTask;
 import com.daniel.async.filewriter.FileWriterCallback;
@@ -21,6 +25,7 @@ import com.daniel.fragments.ImageFragment;
 import com.daniel.fragments.ImageFragmentInterface;
 
 import java.io.File;
+import java.util.Calendar;
 
 import daniel.com.redditscraper.R;
 import permissions.dispatcher.NeedsPermission;
@@ -33,6 +38,9 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity
         implements DatabaseCallback, FileWriterCallback, ImageFragment.OnFragmentInteractionListener {
+    public static String ip = "";
+    private static PinpointManager pinpointManager;
+
     private EditText subredditEditText;
     private Button getPictureButton;
 
@@ -40,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private Image currentImage = null;
 
     private ImageFragmentInterface imageFragment;
+    private String currentSubreddit = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,8 @@ public class MainActivity extends AppCompatActivity
                     findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                     getPictureButton.setEnabled(false);
                     database.getImage(subreddit);
+
+                    logEvent(subreddit);
                 }
             }
         });
@@ -70,6 +81,31 @@ public class MainActivity extends AppCompatActivity
         imageFragment = (ImageFragment) getSupportFragmentManager().findFragmentById(R.id.image_fragment);
 
         Toast.makeText(this, Crypto.generateKey(), Toast.LENGTH_SHORT).show();
+
+        AWSMobileClient.getInstance().initialize(this).execute();
+        PinpointConfiguration config = new PinpointConfiguration(
+                MainActivity.this,
+                AWSMobileClient.getInstance().getCredentialsProvider(),
+                AWSMobileClient.getInstance().getConfiguration()
+        );
+        pinpointManager = new PinpointManager(config);
+    }
+
+    public void logEvent(String subreddit) {
+        if (!currentSubreddit.equals(subreddit)) {
+            currentSubreddit = subreddit;
+        } else {
+            return;
+        }
+
+        pinpointManager.getSessionClient().startSession();
+        final AnalyticsEvent event =
+                pinpointManager.getAnalyticsClient().createEvent("Subreddit")
+                        .withAttribute("Subreddit", subreddit)
+                        .withAttribute("Time", Calendar.getInstance().getTime().toString());
+        pinpointManager.getAnalyticsClient().recordEvent(event);
+        pinpointManager.getSessionClient().stopSession();
+        pinpointManager.getAnalyticsClient().submitEvents();
     }
 
     @Override
@@ -85,6 +121,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+                getPictureButton.setEnabled(true);
             }
         });
     }
