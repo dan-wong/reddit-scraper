@@ -25,6 +25,7 @@ import com.daniel.fragments.ImageFragment;
 import com.daniel.fragments.ImageFragmentInterface;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import daniel.com.redditscraper.R;
@@ -38,7 +39,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity
         implements DatabaseCallback, FileWriterCallback, ImageFragment.OnFragmentInteractionListener {
-    public static String ip = "";
+    private static SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
     private static PinpointManager pinpointManager;
 
     private EditText subredditEditText;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity
         final AnalyticsEvent event =
                 pinpointManager.getAnalyticsClient().createEvent("Subreddit")
                         .withAttribute("Subreddit", subreddit)
-                        .withAttribute("Time", Calendar.getInstance().getTime().toString());
+                        .withAttribute("Time", df.format(Calendar.getInstance().getTime()));
         pinpointManager.getAnalyticsClient().recordEvent(event);
         pinpointManager.getSessionClient().stopSession();
         pinpointManager.getAnalyticsClient().submitEvents();
