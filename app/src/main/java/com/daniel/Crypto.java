@@ -17,7 +17,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-
 public class Crypto {
 
     private static final String characterEncoding = "UTF-8";
