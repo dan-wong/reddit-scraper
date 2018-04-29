@@ -18,6 +18,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Async worker that downloads 50 latest reddit posts' information from given subreddit name
+ */
 public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<RedditImagePackage>> {
     private static final String ENDPOINT_URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d&after=%s";
     private static final String ENDPOINT_COMMENT_URL_FORMAT = "https://www.reddit.com%s.json";
@@ -83,6 +86,9 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<RedditIma
         return redditImagePackages;
     }
 
+    /*
+    Populate database with returned information
+     */
     @Override
     protected void onPostExecute(List<RedditImagePackage> redditImagePackages) {
         callback.images(redditImagePackages);
@@ -93,6 +99,9 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<RedditIma
         return new URL(String.format(ENDPOINT_URL_FORMAT, subreddit, LIMIT, lastImageId));
     }
 
+    /*
+    Below methods obtain about reddit post from JSON response
+     */
     private String getId(JSONObject jsonObject) throws JSONException {
         return jsonObject.getJSONObject("data").getString("name");
     }

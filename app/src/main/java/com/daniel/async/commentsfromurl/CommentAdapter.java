@@ -12,9 +12,8 @@ import java.util.List;
 import daniel.com.redditscraper.R;
 
 /**
- * Created by theooswanditosw164 on 21/04/18.
+ * Custom adapter to show list of comments. Formats it for easier viewing.
  */
-
 public class CommentAdapter extends ArrayAdapter<Comment> {
 
     private List<Comment> comments;
@@ -32,6 +31,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         View listItem = convertView;
 
+        //Based on comment_row.xml defined in layout resources
         if (listItem == null){
             listItem = LayoutInflater.from(this.context).inflate(R.layout.comment_row, parent, false);
         }

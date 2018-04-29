@@ -8,16 +8,19 @@ import java.io.File;
 
 import daniel.com.redditscraper.R;
 
+/**
+ * Class with methods allowing user to save images to phone storage
+ */
 public class FileWriter {
     private static final String LOG_TAG = "FileWriter";
 
-    //https://developer.android.com/training/data-storage/files#java
+    //Obtained from: https://developer.android.com/training/data-storage/files#java
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
 
-    //https://developer.android.com/training/data-storage/files#java
+    //Obtained from: https://developer.android.com/training/data-storage/files#java
     public static File getPublicAlbumStorageDir(Context context) {
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), context.getString(R.string.app_name_folder));

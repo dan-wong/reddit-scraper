@@ -1,9 +1,8 @@
 package com.daniel.async.commentsfromurl;
 
 /**
- * Created by theooswanditosw164 on 21/04/18.
+ * Data class containing data for reddit comment
  */
-
 public class Comment {
     public String author;
     public String score;
@@ -13,10 +12,5 @@ public class Comment {
         this.author = author;
         this.score = score;
         this.body = body;
-    }
-
-    @Override
-    public String toString() {
-        return this.author + " [" + this.score + "] " + this.body;
     }
 }

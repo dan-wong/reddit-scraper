@@ -12,6 +12,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * Asynchronous worker that handles saving of file to phone storage
+ */
 public class FileWriterAsyncTask extends AsyncTask<Void, Void, Boolean> {
     private File directory;
     private RedditImagePackage redditImagePackage;

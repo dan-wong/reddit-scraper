@@ -1,7 +1,7 @@
 package com.daniel.async.imagefromurl;
 
 /**
- * Created by theooswanditosw164 on 29/04/18.
+ * Skeleton that allows classes to show image asynchronously downloaded
  */
 import android.graphics.Bitmap;
 

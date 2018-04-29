@@ -14,10 +14,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Asynchronous worker to retrieve list of comments for reddit post
+ * Returns list of comment data classes.
+ */
 public class CommentsFromUrlAsyncTask extends AsyncTask<Void, Void, List<Comment>> {
     private CommentsFromUrlCallback callback;
     private String url;
 
+    //Set URL and context for callback method invocation
     public CommentsFromUrlAsyncTask(CommentsFromUrlCallback callback, String url) {
         this.callback = callback;
         this.url = url;
@@ -27,6 +32,7 @@ public class CommentsFromUrlAsyncTask extends AsyncTask<Void, Void, List<Comment
     protected List<Comment> doInBackground(Void... voids) {
         List<Comment> comments = new ArrayList<>();
 
+        //Queries initial URL provided
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL(this.url);
@@ -38,6 +44,7 @@ public class CommentsFromUrlAsyncTask extends AsyncTask<Void, Void, List<Comment
                 return null;
             }
 
+            //Process returned JSON file and populate comments list with top level responses
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             StringBuilder jsonString = new StringBuilder();
 
