@@ -20,7 +20,7 @@ import com.daniel.async.filewriter.FileWriterAsyncTask;
 import com.daniel.async.filewriter.FileWriterCallback;
 import com.daniel.database.Database;
 import com.daniel.database.DatabaseCallback;
-import com.daniel.database.Image;
+import com.daniel.database.RedditImagePackage;
 import com.daniel.fragments.ImageFragment;
 import com.daniel.fragments.ImageFragmentInterface;
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     private Button getPictureButton;
 
     private Database database;
-    private Image currentImage = null;
+    private RedditImagePackage currentRedditImagePackage = null;
 
     private ImageFragmentInterface imageFragment;
     private String currentSubreddit = "";
@@ -110,9 +110,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void imageReturned(Image image) {
-        imageFragment.newImage(image);
-        currentImage = image;
+    public void imageReturned(RedditImagePackage redditImagePackage) {
+        imageFragment.newImage(redditImagePackage);
+        currentRedditImagePackage = redditImagePackage;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity
     void saveImageToDevice() {
         if (FileWriter.isExternalStorageWritable()) {
             final File directory = FileWriter.getPublicAlbumStorageDir(this);
-            if (currentImage == null) {
+            if (currentRedditImagePackage == null) {
                 Toast.makeText(this, R.string.no_current_image_error, Toast.LENGTH_SHORT).show();
             } else { //Try writing to file
                 new AlertDialog.Builder(this)
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity
                         .setMessage(R.string.save_image_prompt)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                new FileWriterAsyncTask(directory, currentImage, MainActivity.this).execute();
+                                new FileWriterAsyncTask(directory, currentRedditImagePackage, MainActivity.this).execute();
                             }
                         })
                         .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {

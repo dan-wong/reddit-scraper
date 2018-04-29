@@ -4,9 +4,9 @@
     <string name="subreddit">Subreddit</string>
     <string name="get_picture">Get Picture</string>
     <string name="imageview">imageview</string>
-    <string name="permission_storage_rationale">The storage permission is required to save the image to your local images directory.</string>
-    <string name="permission_storage_denied">Storage Permission denied! Cannot save image.</string>
-    <string name="permission_storage_neverask">We will never ask for the storage permission again. You will not be able to save images.</string>
+    <string name="permission_storage_rationale">The storage permission is required to save the redditImagePackage to your local redditImagePackages directory.</string>
+    <string name="permission_storage_denied">Storage Permission denied! Cannot save redditImagePackage.</string>
+    <string name="permission_storage_neverask">We will never ask for the storage permission again. You will not be able to save redditImagePackages.</string>
     <string name="button_allow">Allow</string>
     <string name="button_deny">Deny</string>
     <string name="write_device_failed">Unable to write to device!</string>
@@ -14,12 +14,12 @@
     <string name="external_storage_not_mounted">External Storage not mounted!</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
-    <string name="save_image_prompt">Would you like to save this image?</string>
+    <string name="save_image_prompt">Would you like to save this redditImagePackage?</string>
     <string name="save_image_title">Save Image</string>
-    <string name="no_current_image_error">No current image!</string>
+    <string name="no_current_image_error">No current redditImagePackage!</string>
     <string name="empty_subreddit_error">Subreddit cannot be empty!</string>
     <string name="keyGen">m2yfMs3hPXyM7UhLGpSAQyNXvfkWn925gC5MuXptcn34SakcbdKh8EJ</string>
-    <string name="failed_load_image">Failed to load image :(</string>
+    <string name="failed_load_image">Failed to load redditImagePackage :(</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

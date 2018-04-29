@@ -1,7 +1,7 @@
 package com.daniel.database;
 
 public interface DatabaseCallback {
-    void imageReturned(Image image);
+    void imageReturned(RedditImagePackage redditImagePackage);
 
     void error(String message);
 }

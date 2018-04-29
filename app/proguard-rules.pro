@@ -72,13 +72,6 @@
 -dontwarn android.support.**
 -dontwarn com.google.ads.**
 
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
-
 -keepclassmembers public class org.apache.commons.lang3.** {
     public protected private *;
 }

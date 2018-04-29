@@ -1,6 +1,7 @@
 package com.daniel.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,23 +18,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.daniel.async.commentsfromurl.Comment;
 import com.daniel.async.commentsfromurl.CommentAdapter;
 import com.daniel.async.commentsfromurl.CommentsFromUrlAsyncTask;
 import com.daniel.async.commentsfromurl.CommentsFromUrlCallback;
-import com.daniel.database.Image;
-import com.daniel.glide.GlideApp;
+import com.daniel.async.imagefromurl.ImageFromUrlAsyncTask;
+import com.daniel.async.imagefromurl.ImageFromUrlCallback;
+import com.daniel.database.RedditImagePackage;
 
 import java.util.List;
 
 import daniel.com.redditscraper.R;
 
 public class ImageFragment extends Fragment
-        implements ImageFragmentInterface, CommentsFromUrlCallback {
+        implements ImageFragmentInterface, CommentsFromUrlCallback, ImageFromUrlCallback {
     private OnFragmentInteractionListener mListener;
 
     private TextView titleTextView, authorTextView, scoreTextView;
@@ -66,7 +64,7 @@ public class ImageFragment extends Fragment
             totalHeight += view.getMeasuredHeight();
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * listAdapter.getCount()) + 150;
+        params.height = totalHeight + (listView.getDividerHeight() * listAdapter.getCount()) - 150;
         listView.setLayoutParams(params);
     }
 
@@ -120,36 +118,17 @@ public class ImageFragment extends Fragment
     }
 
     @Override
-    public void newImage(Image image) {
+    public void newImage(RedditImagePackage redditImagePackage) {
         if (imageLayout.getVisibility() == View.INVISIBLE) {
             imageLayout.setVisibility(View.VISIBLE);
         }
 
-        titleTextView.setText(image.title);
-        authorTextView.setText(image.author);
-        scoreTextView.setText(image.score);
+        titleTextView.setText(redditImagePackage.title);
+        authorTextView.setText(redditImagePackage.author);
+        scoreTextView.setText(redditImagePackage.score);
 
-        new CommentsFromUrlAsyncTask(ImageFragment.this, image.commentsUrl).execute();
-
-        GlideApp.with(this)
-                .load(image.url)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Toast.makeText(getContext(), R.string.failed_load_image, Toast.LENGTH_SHORT).show();
-                        mListener.imageLoaded();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        mListener.imageLoaded();
-                        return false;
-                    }
-                })
-                .into(imageView);
+        new CommentsFromUrlAsyncTask(ImageFragment.this, redditImagePackage.commentsUrl).execute();
+        new ImageFromUrlAsyncTask(ImageFragment.this).execute(redditImagePackage.url);
     }
 
     @Override
@@ -163,6 +142,13 @@ public class ImageFragment extends Fragment
     public void error(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void setImage(Bitmap image) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mListener.imageLoaded();
+        imageView.setImageBitmap(image);
     }
 
     public interface OnFragmentInteractionListener {

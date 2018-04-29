@@ -1,6 +1,6 @@
 package com.daniel.database;
 
-public class Image {
+public class RedditImagePackage {
     public String id;
     public String url;
     public String title;
@@ -8,7 +8,7 @@ public class Image {
     public String score;
     public String commentsUrl;
 
-    public Image(String id, String url, String title, String author, String score, String commentsUrl) {
+    public RedditImagePackage(String id, String url, String title, String author, String score, String commentsUrl) {
         this.id = id;
         this.url = url;
         this.title = title;

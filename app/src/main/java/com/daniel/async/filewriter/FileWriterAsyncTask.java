@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
-import com.daniel.database.Image;
+import com.daniel.database.RedditImagePackage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,12 +14,12 @@ import java.net.URL;
 
 public class FileWriterAsyncTask extends AsyncTask<Void, Void, Boolean> {
     private File directory;
-    private Image image;
+    private RedditImagePackage redditImagePackage;
     private FileWriterCallback callback;
 
-    public FileWriterAsyncTask(File directory, Image image, FileWriterCallback callback) {
+    public FileWriterAsyncTask(File directory, RedditImagePackage redditImagePackage, FileWriterCallback callback) {
         this.directory = directory;
-        this.image = image;
+        this.redditImagePackage = redditImagePackage;
         this.callback = callback;
     }
 
@@ -30,7 +30,7 @@ public class FileWriterAsyncTask extends AsyncTask<Void, Void, Boolean> {
             try {
                 Bitmap bitmap;
                 try {
-                    InputStream in = new URL(image.url).openStream();
+                    InputStream in = new URL(redditImagePackage.url).openStream();
                     bitmap = BitmapFactory.decodeStream(in);
                     in.close();
                 } catch (Exception e) {
@@ -42,7 +42,7 @@ public class FileWriterAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
 
-                outputStream = new FileOutputStream(new File(directory, image.title + ".png"));
+                outputStream = new FileOutputStream(new File(directory, redditImagePackage.title + ".png"));
                 outputStream.write(byteArray);
                 outputStream.close();
 

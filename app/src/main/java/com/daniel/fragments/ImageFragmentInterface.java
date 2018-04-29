@@ -1,7 +1,7 @@
 package com.daniel.fragments;
 
-import com.daniel.database.Image;
+import com.daniel.database.RedditImagePackage;
 
 public interface ImageFragmentInterface {
-    void newImage(Image image);
+    void newImage(RedditImagePackage redditImagePackage);
 }

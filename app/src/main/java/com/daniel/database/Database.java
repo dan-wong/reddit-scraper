@@ -36,9 +36,9 @@ public class Database implements RedditScraperCallback {
     public void getImage(String subreddit) {
         CachedImages cachedImages = cache.get(subreddit);
 
-        //Either first time we poll for this subreddit, or no images left
-        if (cachedImages == null || cachedImages.images.isEmpty()) {
-            //Get new images
+        //Either first time we poll for this subreddit, or no redditImagePackages left
+        if (cachedImages == null || cachedImages.redditImagePackages.isEmpty()) {
+            //Get new redditImagePackages
             currentSubredditSearch = subreddit;
 
             String lastImageId = "";
@@ -48,7 +48,7 @@ public class Database implements RedditScraperCallback {
 
             new RedditScraperAsyncTask(this, subreddit, lastImageId).execute();
         } else {
-            listener.imageReturned(cachedImages.images.remove(0));
+            listener.imageReturned(cachedImages.redditImagePackages.remove(0));
         }
     }
 
@@ -57,25 +57,25 @@ public class Database implements RedditScraperCallback {
     }
 
     @Override
-    public void images(List<Image> images) {
-        if (images == null) {
-            listener.error("Subreddit has no images :(");
+    public void images(List<RedditImagePackage> redditImagePackages) {
+        if (redditImagePackages == null) {
+            listener.error("Subreddit has no redditImagePackages :(");
             return;
         }
 
-        Iterator<Image> imageIterator = images.iterator();
+        Iterator<RedditImagePackage> imageIterator = redditImagePackages.iterator();
         while (imageIterator.hasNext()) {
             if (!checkIfImage(imageIterator.next().url)) {
                 imageIterator.remove();
             }
         }
 
-        if (images.size() == 0) {
-            listener.error("Subreddit has no images :(");
+        if (redditImagePackages.size() == 0) {
+            listener.error("Subreddit has no redditImagePackages :(");
             return;
         }
 
-        cache.put(currentSubredditSearch, new CachedImages(images));
+        cache.put(currentSubredditSearch, new CachedImages(redditImagePackages));
         getImage(currentSubredditSearch);
     }
 

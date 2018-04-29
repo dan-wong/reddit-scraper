@@ -3,7 +3,7 @@ package com.daniel.async.redditscraper;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
-import com.daniel.database.Image;
+import com.daniel.database.RedditImagePackage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
+public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<RedditImagePackage>> {
     private static final String ENDPOINT_URL_FORMAT = "https://www.reddit.com/r/%s/.json?limit=%d&after=%s";
     private static final String ENDPOINT_COMMENT_URL_FORMAT = "https://www.reddit.com%s.json";
     private static final int LIMIT = 50;
@@ -34,8 +34,8 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
     }
 
     @Override
-    protected List<Image> doInBackground(Void... voids) {
-        List<Image> images = new ArrayList<>();
+    protected List<RedditImagePackage> doInBackground(Void... voids) {
+        List<RedditImagePackage> redditImagePackages = new ArrayList<>();
 
         HttpURLConnection urlConnection = null;
         try {
@@ -70,7 +70,7 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
 
                 String commentUrl = String.format(ENDPOINT_COMMENT_URL_FORMAT, responseArray.getJSONObject(i).getJSONObject("data").getString("permalink"));
 
-                images.add(new Image(id, imageUrl, title, author, score, commentUrl));
+                redditImagePackages.add(new RedditImagePackage(id, imageUrl, title, author, score, commentUrl));
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();
@@ -80,12 +80,12 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<Image>> {
             }
         }
 
-        return images;
+        return redditImagePackages;
     }
 
     @Override
-    protected void onPostExecute(List<Image> images) {
-        callback.images(images);
+    protected void onPostExecute(List<RedditImagePackage> redditImagePackages) {
+        callback.images(redditImagePackages);
     }
 
     @SuppressLint("DefaultLocale")
