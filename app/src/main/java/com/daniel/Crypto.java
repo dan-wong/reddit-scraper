@@ -17,14 +17,16 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Class to obfuscate/deobfuscate the data obfuscation variables
+ */
 public class Crypto {
 
     private static final String characterEncoding = "UTF-8";
     private static final String cipherTransformation = "AES/CBC/PKCS5Padding";
     private static final String aesEncryptionAlgorithm = "AES";
 
-    public static byte[] decrypt(byte[] cipherText, byte[] key, byte [] initialVector) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
-    {
+    public static byte[] decrypt(byte[] cipherText, byte[] key, byte [] initialVector) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         Cipher cipher = Cipher.getInstance(cipherTransformation);
         SecretKeySpec secretKeySpecy = new SecretKeySpec(key, aesEncryptionAlgorithm);
         IvParameterSpec ivParameterSpec = new IvParameterSpec(initialVector);
@@ -33,8 +35,7 @@ public class Crypto {
         return cipherText;
     }
 
-    public static byte[] encrypt(byte[] plainText, byte[] key, byte [] initialVector) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
-    {
+    public static byte[] encrypt(byte[] plainText, byte[] key, byte [] initialVector) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         Cipher cipher = Cipher.getInstance(cipherTransformation);
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, aesEncryptionAlgorithm);
         IvParameterSpec ivParameterSpec = new IvParameterSpec(initialVector);
@@ -75,9 +76,7 @@ public class Crypto {
             byte[] cipheredBytes = Base64.decode(encryptedText, Base64.DEFAULT);
             byte[] keyBytes = getKeyBytes(key);
             return new String(decrypt(cipheredBytes, keyBytes, keyBytes), characterEncoding);
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             e.printStackTrace();
             return "";
         }

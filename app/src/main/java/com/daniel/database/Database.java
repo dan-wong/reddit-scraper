@@ -8,7 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-//Singleton
+/**
+ * Singleton class
+ * Handles retrieving and caching images
+ */
 public class Database implements RedditScraperCallback {
     private static Database instance;
 
@@ -33,12 +36,17 @@ public class Database implements RedditScraperCallback {
         this.listener = listener;
     }
 
+    /**
+     * Get the images data for a certain subreddit. Also has pagination.
+     *
+     * @param subreddit
+     */
     public void getImage(String subreddit) {
         CachedImages cachedImages = cache.get(subreddit);
 
-        //Either first time we poll for this subreddit, or no redditImagePackages left
+        //Either first time we poll for this subreddit, or no images left
         if (cachedImages == null || cachedImages.redditImagePackages.isEmpty()) {
-            //Get new redditImagePackages
+            //Get new images
             currentSubredditSearch = subreddit;
 
             String lastImageId = "";
@@ -56,10 +64,14 @@ public class Database implements RedditScraperCallback {
         return url.contains("jpeg") || url.contains("jpg") || url.contains("png");
     }
 
+    /**
+     * Check if there are any images retrieved.
+     * @param redditImagePackages
+     */
     @Override
     public void images(List<RedditImagePackage> redditImagePackages) {
         if (redditImagePackages == null) {
-            listener.error("Subreddit has no redditImagePackages :(");
+            listener.error("Subreddit has no images :(");
             return;
         }
 
@@ -71,7 +83,7 @@ public class Database implements RedditScraperCallback {
         }
 
         if (redditImagePackages.size() == 0) {
-            listener.error("Subreddit has no redditImagePackages :(");
+            listener.error("Subreddit has no images :(");
             return;
         }
 

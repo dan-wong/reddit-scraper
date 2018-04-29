@@ -39,7 +39,14 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity
         implements DatabaseCallback, FileWriterCallback, ImageFragment.OnFragmentInteractionListener {
+    /**
+     * Static formatter to format the time in the Pinpoint event attribute
+     */
     private static SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+    /**
+     * Static Pinpoint Manager for aws analytics
+     */
     private static PinpointManager pinpointManager;
 
     private EditText subredditEditText;
@@ -58,11 +65,13 @@ public class MainActivity extends AppCompatActivity
 
         subredditEditText = findViewById(R.id.subredditEditText);
 
+        //Create an instance of Database and register the listener
         database = Database.getInstance();
         database.addListener(this);
 
         getPictureButton = findViewById(R.id.getPictureBtn);
 
+        //Set the click listener to trigger image retrieval
         getPictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,6 +83,7 @@ public class MainActivity extends AppCompatActivity
                     getPictureButton.setEnabled(false);
                     database.getImage(subreddit);
 
+                    //Log the event in AWS
                     logEvent(subreddit);
                 }
             }
@@ -81,6 +91,7 @@ public class MainActivity extends AppCompatActivity
 
         imageFragment = (ImageFragment) getSupportFragmentManager().findFragmentById(R.id.image_fragment);
 
+        //Initialise the AWS Analytics client
         AWSMobileClient.getInstance().initialize(this).execute();
         PinpointConfiguration config = new PinpointConfiguration(
                 MainActivity.this,
@@ -90,6 +101,11 @@ public class MainActivity extends AppCompatActivity
         pinpointManager = new PinpointManager(config);
     }
 
+    /**
+     * Method to log analytics events whenever a user searches for a subreddit
+     *
+     * @param subreddit
+     */
     public void logEvent(String subreddit) {
         if (!currentSubreddit.equals(subreddit)) {
             currentSubreddit = subreddit;
@@ -107,12 +123,21 @@ public class MainActivity extends AppCompatActivity
         pinpointManager.getAnalyticsClient().submitEvents();
     }
 
+    /**
+     * Callback method for retrieving new images from database.
+     * Delegate task of loading image to the fragment.
+     * @param redditImagePackage
+     */
     @Override
     public void imageReturned(RedditImagePackage redditImagePackage) {
         imageFragment.newImage(redditImagePackage);
         currentRedditImagePackage = redditImagePackage;
     }
 
+    /**
+     * Callback method in the case an error is thrown.
+     * @param message
+     */
     @Override
     public void error(final String message) {
         this.runOnUiThread(new Runnable() {
@@ -125,6 +150,9 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Permission safe method to try saving the image to the device
+     */
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void saveImageToDevice() {
         if (FileWriter.isExternalStorageWritable()) {
@@ -180,6 +208,10 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, R.string.permission_storage_neverask, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Callback to show result of writing images to storage
+     * @param result
+     */
     @Override
     public void result(Boolean result) {
         if (result) {
@@ -195,11 +227,17 @@ public class MainActivity extends AppCompatActivity
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    /**
+     * Callback from the imagefragment to let the MainActivity know the image loaded successfully
+     */
     @Override
     public void imageLoaded() {
         getPictureButton.setEnabled(true);
     }
 
+    /**
+     * Delegate to the permission manager to request storage permission
+     */
     @Override
     public void saveImage() {
         MainActivityPermissionsDispatcher.saveImageToDeviceWithPermissionCheck(this);

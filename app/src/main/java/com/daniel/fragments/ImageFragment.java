@@ -28,6 +28,9 @@ import java.util.List;
 
 import daniel.com.redditscraper.R;
 
+/**
+ * Fragment handling title, author, score, image and comments UI
+ */
 public class ImageFragment extends Fragment
         implements ImageFragmentInterface, CommentsFromUrlCallback, ImageFromUrlCallback {
     private OnFragmentInteractionListener mListener;
@@ -89,6 +92,7 @@ public class ImageFragment extends Fragment
 
         setListViewHeightBasedOnChildren(commentsListView);
 
+        //Set onclicklistener to call MainActivities saveImage method
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -117,6 +121,11 @@ public class ImageFragment extends Fragment
         mListener = null;
     }
 
+    /**
+     * Callbackto load the image into the imageView, load the title with information and load the comments
+     *
+     * @param redditImagePackage
+     */
     @Override
     public void newImage(RedditImagePackage redditImagePackage) {
         if (imageLayout.getVisibility() == View.INVISIBLE) {
