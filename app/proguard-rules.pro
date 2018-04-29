@@ -76,5 +76,9 @@
     public protected private *;
 }
 
+-keepclassmembers public class com.daniel.** {
+    public protected private *;
+}
+
 -keep public class com.amazonaws.**
 -dontwarn com.amazonaws.**
