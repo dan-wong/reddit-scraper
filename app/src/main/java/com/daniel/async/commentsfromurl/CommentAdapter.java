@@ -11,10 +11,6 @@ import java.util.List;
 
 import daniel.com.redditscraper.R;
 
-/**
- * Created by theooswanditosw164 on 21/04/18.
- */
-
 public class CommentAdapter extends ArrayAdapter<Comment> {
 
     private List<Comment> comments;
