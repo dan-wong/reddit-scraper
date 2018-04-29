@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity
 
         imageFragment = (ImageFragment) getSupportFragmentManager().findFragmentById(R.id.image_fragment);
 
-        Toast.makeText(this, Crypto.generateKey(), Toast.LENGTH_SHORT).show();
-
         AWSMobileClient.getInstance().initialize(this).execute();
         PinpointConfiguration config = new PinpointConfiguration(
                 MainActivity.this,
