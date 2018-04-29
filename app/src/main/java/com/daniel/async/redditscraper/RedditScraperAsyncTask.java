@@ -68,7 +68,8 @@ public class RedditScraperAsyncTask extends AsyncTask<Void, Void, List<RedditIma
                 String author = getAuthor(currentJSONObject);
                 String score = getScore(currentJSONObject);
 
-                String commentUrl = String.format(ENDPOINT_COMMENT_URL_FORMAT, responseArray.getJSONObject(i).getJSONObject("data").getString("permalink"));
+                String commentUrl;
+                commentUrl = String.format(ENDPOINT_COMMENT_URL_FORMAT, responseArray.getJSONObject(i).getJSONObject("data").getString("permalink"));
 
                 redditImagePackages.add(new RedditImagePackage(id, imageUrl, title, author, score, commentUrl));
             }
