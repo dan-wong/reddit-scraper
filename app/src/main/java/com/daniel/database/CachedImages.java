@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CachedImages {
     public List<RedditImagePackage> redditImagePackages;
-    private String lastImageId;
+    private String com.daniel.Crypto.DeObfuscate(lastImageId);
 
     public CachedImages(List<RedditImagePackage> redditImagePackages) {
         this.redditImagePackages = redditImagePackages;
@@ -12,6 +12,6 @@ public class CachedImages {
     }
 
     public String getLastImageId() {
-        return lastImageId;
+        return com.daniel.Crypto.DeObfuscate(lastImageId);
     }
 }
